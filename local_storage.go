@@ -6,7 +6,6 @@ package locstor
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/gopherjs/gopherjs/js"
 )
@@ -27,9 +26,9 @@ func (e ItemNotFoundError) Error() string {
 	return e.msg
 }
 
-func newItemNotFoundError(format string, args ...interface{}) ItemNotFoundError {
+func newItemNotFoundError(format string) ItemNotFoundError {
 	return ItemNotFoundError{
-		msg: fmt.Sprintf(format, args...),
+		msg: format,
 	}
 }
 
@@ -78,7 +77,7 @@ func SetItem(key, item string) (err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 		}
 	}()
@@ -98,7 +97,7 @@ func GetItem(key string) (s string, err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 			s = ""
 		}
@@ -107,7 +106,7 @@ func GetItem(key string) (s string, err error) {
 	item := localStorage.Call("getItem", key)
 	if item == js.Undefined || item == nil {
 		err = newItemNotFoundError(
-			"Could not find an item with the given key: %s", key)
+			"Could not find an item with the given key: " + key)
 	} else {
 		s = item.String()
 	}
@@ -125,7 +124,7 @@ func Key(item string) (s string, err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 			s = ""
 		}
@@ -134,7 +133,7 @@ func Key(item string) (s string, err error) {
 	key := localStorage.Call("key", item)
 	if key == js.Undefined || key == nil {
 		err = newItemNotFoundError(
-			"Could not find a key for the given item: %s", item)
+			"Could not find a key for the given item: " + item)
 	} else {
 		s = key.String()
 	}
@@ -151,7 +150,7 @@ func RemoveItem(key string) (err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 		}
 	}()
@@ -170,7 +169,7 @@ func Length() (l int, err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 			l = 0
 		}
@@ -190,7 +189,7 @@ func Clear() (err error) {
 			var ok bool
 			err, ok = r.(error)
 			if !ok {
-				err = fmt.Errorf("could not use local storage: %v", r)
+				err = errors.New("could not use local storage: ")
 			}
 		}
 	}()
